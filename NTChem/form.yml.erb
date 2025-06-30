@@ -1,0 +1,51 @@
+<%
+  require './composer_fugaku/utils.rb'
+
+  form, header, script, check, submit = fugaku_common("small_and_large")
+
+  # spack versions ntchem -s
+  # versions = ["24.04", "13.0.0", "12.2.0"]
+  
+  # calcs = [["HF/DFT (Hartree-Fock/Density Functional Theory)", "HF/DFT"]]
+%>
+---
+form:
+<%= form %>
+  mol_name:
+    widget: text
+    label: Mol name
+    required: true
+    value: test
+
+header:
+<%= header %>
+
+script: |
+<%= script %>
+  export OMP_STACKSIZE=128M
+
+  # Load modules
+  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  spack load ntchem
+
+  # Initialization
+  curdir="#{_SCRIPT_LOCATION}"
+  wrkdir="${curdir}/ntchem"
+  mkdir -p ${wrkdir}
+  cd ${wrkdir}
+  rm -f ./#{mol_name}.* ./INPUT
+
+  # BasInp
+  cp -p ../#{mol_name}.basis.inp ./INPUT
+  mpiexec basinp_mpiomp.exe > ../#{mol_name}.log 2>&1
+
+  # HF guess
+  cp -p ../#{mol_name}.hf.inp ./INPUT
+  mpiexec mdint1_mpiomp.exe >> ../#{mol_name}.log 2>&1
+  mpiexec scf_mpiomp.exe >> ../#{mol_name}.log 2>&1
+
+submit: |
+<%= submit %>
+
+check: |
+<%= check %>

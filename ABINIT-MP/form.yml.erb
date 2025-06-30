@@ -1,0 +1,43 @@
+<%
+  require './composer_fugaku/utils.rb'
+
+  enable_threads = true
+  check_script_content = true
+  form, header, script, check, submit = fugaku_common("small_and_large", enable_threads, check_script_content)
+  
+  # spack versions abinitmp -s
+  # versions = [["2-8", "2-8", "disable-exec_file24", "disable-exec_file122"], ["2-4", "2-4", "disable-exec_file28", "disable-exec_file122"], ["1-22", "1-22", "disable-exec_file28", "disable-exec_file24"]]
+
+  binaries = ["abinitmp", "abinitmp-fint", "abinitmp_smp", "abinitmp_smp-fint"]
+%>
+---
+form:
+<%= form %>
+<%= select("exec_file",  "Executable file of ABINIT-MP",  binaries,  "abinitmp") %>
+<%# radio("abinitmp", "ABINIT-MP version", versions) %>
+<%= input_file(true) %>
+<%= llio("file") %>
+
+header:
+<%= header %>
+
+script: |
+<%= script %>
+
+  # Load modules
+  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  spack load abinitmp@2-8
+  #{llio_comment}
+  #{llio_exec_file_transfer} `which #{exec_file}`
+  #{llio_file_transfer} #{input_file}
+  #{llio_dir_transfer} #{dirname(input_file)}
+  
+  # Execute ABINIT-MP
+  cd #{dirname(input_file)}
+  mpiexec #{exec_file} < #{basename(input_file)}
+
+check: |
+<%= check %>
+
+submit: |
+<%= submit %>

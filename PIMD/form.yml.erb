@@ -1,0 +1,38 @@
+<%
+  require './composer_fugaku/utils.rb'
+
+  enable_threads = true
+  check_script_content = true
+  form, header, script, check, submit = fugaku_common("small", enable_threads, check_script_content)
+  
+  # spack versions pimd -s
+  # spack find --paths pimd@2.6.1-aenet
+  versions = ["2.6.1-qe6.3", "2.6.1-cp2k", "2.6.1-aenet"]
+  binaries = ["calc.x", "convert_charmm.x", "convert_tinker.x", "gau.x", "pimd.mpi.x", "pimd.x", "polymers.x", "prep_best.x", "prep_liquid.x", "run_molpro.x"]
+%>
+---
+form:
+<%= form %>
+<%= radio("pimd", "PIMD version", versions) %>
+<%# working_dir(true) %>
+<%= exec_file(binaries, "pimd.mpi.x") %>
+
+header:
+<%= header %>
+
+script: |
+<%= script %>
+
+  # Load modules
+  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  spack load pimd@#{pimd}
+
+  # Execute PIMD
+  cd #{_SCRIPT_LOCATION}
+  mpiexec #{exec_file}
+
+check: |
+<%= check %>
+
+submit: |
+<%= submit %>

@@ -1,0 +1,166 @@
+<%
+  require './composer_fugaku/utils.rb'
+%>
+---
+form:
+  nodes:
+    widget: radio
+    label: Node dimension
+    direction: horizontal
+    value: "1 dimension"
+    options:
+      - ["1 dimension", "", disable-two_dim_nodes, disable-three_dim_nodes, disable-node_strict ]
+      - ["2 dimension", "", disable-one_dim_nodes, disable-three_dim_nodes, disable-node_strict ]
+      - ["3 dimension", "", disable-two_dim_nodes, disable-one_dim_nodes ]
+
+  one_dim_nodes:
+    widget:  number
+    required: true
+    label:   Number of nodes (1 - 48)
+    indent:  1
+    value:   1
+    min:     1
+    max:     48
+    step:    1
+  
+  two_dim_nodes:
+    widget:  number
+    label:   [X nodes (1 - 48), Y nodes (1 - 69)]
+    indent:  1
+    size:    2
+    value:   [1, 1]
+    min:     [1, 1]
+    max:     [48, 69]
+    step:    [1, 1]
+
+  three_dim_nodes:
+    widget:  number
+    label:   [X nodes (1 - 48), Y nodes (1 - 69), Z nodes (1 - 48)]
+    indent:  1
+    size:    3
+    value:   [1, 1, 1]
+    min:     [1, 1, 1]
+    max:     [48, 69, 48]
+    step:    [1, 1, 1]
+
+  node_shape:
+    widget: radio
+    label: Node shape
+    indent:  1
+    value: (None)
+    direction: horizontal
+    options:
+      - ["(None)",  ""]
+      - ["torus",   ":torus"]
+      - ["mesh",    ":mesh"]
+      - ["noncont", ":noncont"]
+
+  node_strict:
+    widget: radio
+    label: Non-rotating node assignment
+    indent:  1
+    value: (None)
+    direction: horizontal
+    options:
+      - ["(None)",  ""]
+      - ["strict",    ":strict"]
+      - ["strict-io", ":strict-io"]
+
+  time:
+    widget:   number
+    label:    [ Max run hours (0 - 24), Max run minutes (0 - 59) ]
+    size:     2
+    value:    [  1,  0 ]
+    min:      [  0,  0 ]
+    max:      [ 24, 59 ]
+    step:     [  1,  1 ]
+    
+  proc_thread:
+    widget: number
+    size: 2
+    label: [Processes, Threads (1-48)]
+    value: [1, 48]
+    min: [1, 1]
+    max: ["", 48]
+
+  show_advanced_options:
+    widget: checkbox
+    options:
+      - [ 'Show advanced option', '', show-statistics, show-bulk, show-gfscache, show-use_spack ]
+
+  bulk:
+    widget: number
+    label: [Start bulk number, End bulk number]
+    indent: 1
+    size: 2
+    min: [0, 0]
+    max: [999999, 999999]
+    
+  statistics:
+    widget: radio
+    label: Output statistics information
+    indent: 1
+    value: (None)
+    options:
+      - ["(None)",  "", disable-pathname]
+      - ["Outputs the statistics of the submitted job", "-s"]
+      - ["Outputs information about the submitted job on a per-node basis", "-S"]
+
+  pathname:
+    widget: text
+    label: Statistics file name
+    indent: 2
+
+  gfscache:
+    widget: checkbox
+    label: Volume of data area
+    separator: ":"
+    direction: horizontal
+    indent: 1
+    options:
+      - ["/vol0002", "/vol0002"]
+      - ["/vol0003", "/vol0003"]
+      - ["/vol0004", "/vol0004"]
+      - ["/vol0005", "/vol0005"]
+      - ["/vol0006", "/vol0006"]
+    help: "If you use spack, you may need /vol0004."
+
+  use_spack:
+    widget: checkbox
+    indent: 1
+    options:
+      - [ "Use spack", "# Load modules\n. /vol0004/apps/oss/spack/share/spack/setup-env.sh", enable-spack_modules, set-value-gfscache: /vol0004 ]
+
+  # spack find --format '{name}@{version}/{hash:7}' platform=linux os=rhel8 target=a64fx | awk '{print "      - [ "$1", "$1" ]"}'
+  spack_modules:
+    widget: multi_select
+    separator: " "
+    label: Select spack modules
+    indent: 2
+    options:
+<% File.foreach("./composer_fugaku/Fujitsu_TCS/spack_list.txt") do |line| %>
+      - [<%= line %>]
+<% end %>
+header:
+<%= header() %>
+
+script: |
+  #!/bin/bash
+  #PJM -L "node=#{one_dim_nodes}#{:node_shape}"
+  #PJM -L "node=#{two_dim_nodes_1}x#{two_dim_nodes_2}#{:node_shape}"
+  #PJM -L "node=#{three_dim_nodes_1}x#{three_dim_nodes_2}x#{three_dim_nodes_3}#{:node_shape}#{:node_strict}"
+  #PJM -L "elapse=#{time_1}:#{time_2}:00"
+  #PJM --mpi "proc=#{proc_thread_1}"
+  #PJM --bulk --sparam #{bulk_1}-#{bulk_2}
+  #PJM #{statistics}
+  #PJM --pathname #{pathname}
+  #PJM -x PJM_LLIO_GFSCACHE=#{gfscache}
+  set -e
+  
+  #{use_spack}
+  spack load #{spack_modules}
+  export OMP_NUM_THREADS=#{proc_thread_2}
+
+submit: |
+  OC_SUBMIT_OPTIONS='--no-check-directory'
+  

@@ -1,0 +1,29 @@
+<%
+  require './composer_fugaku/utils.rb'
+  
+  form, header, script, check, submit = fugaku_common("small")
+  
+  # spack versions braket -s
+  #versions = ["1.6.0"] # Since there is only one version, we do not create options in the form.
+%>
+---
+form:
+<%= form %>
+<%= input_file(true) %>
+
+header:
+<%= header %>
+
+script: |
+<%= script %>
+  
+  # Load modules
+  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  spack load braket
+  
+  # Execute braket
+  cd #{dirname(input_file)}
+  mpiexec bra --mode simple --file #{basename(input_file)}
+
+submit: |
+<%= submit %>

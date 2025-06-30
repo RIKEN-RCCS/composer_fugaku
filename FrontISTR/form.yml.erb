@@ -1,0 +1,44 @@
+<%
+  require './composer_fugaku/utils.rb'
+
+  enable_threads = true
+  check_script_content = true
+  form, header, script, check, submit = fugaku_common("small", enable_threads, check_script_content)
+  
+  # spack find fugaku-frontistr
+  #versions = ["master"] # Since there is only one version, we do not create options in the form.
+
+  # spack find --paths fugaku-frontistr@master
+  binaries = ["fistr1", "hec2rcap", "hecmw_part1", "hecmw_vis1", "rconv", "rmerge"]
+%>
+---
+form:
+<%= form %>
+<%= working_dir(true) %>
+  pre_execute:
+    widget: checkbox
+    value: Execute hecmw_part1"
+    options:
+      - ["Execute hecmw_part1", "mpiexec -n 1 hecmw_part1"]
+<%= exec_file(binaries) %>
+
+header:
+<%= header %>
+
+script: |
+<%= script %>
+
+  # Load modules  
+  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  spack load fugaku-frontistr
+
+  # Execute FrontISTR
+  cd #{working_dir}
+  #{pre_execute}
+  mpiexec #{exec_file}
+
+check: |
+<%= check %>
+
+submit: |
+<%= submit %>

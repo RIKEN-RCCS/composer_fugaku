@@ -1,0 +1,46 @@
+<%
+  require './composer_fugaku/utils.rb'
+
+  enable_threads = true
+  check_script_content = true
+  form, header, script, check, submit = fugaku_common("small", enable_threads, check_script_content)
+  
+  # spack versions phase0 -s
+  # versions = ["2023.01", "2021.02", "2021.01", "2019.02"]
+%>
+---
+form:
+<%= form %>
+  version:
+    widget: radio
+    direction: horizontal
+    label: Executable file
+    required: true
+    value: phase.3d
+    options:
+      - [phase.3d, [phase.3d, lhct42t]]
+      - [phase,    [phase,    jnmmtmd]]
+      - [ekcal,    [ekcal,    jnmmtmd]]
+      
+<%= working_dir(true) %>
+<%= text("options", "Options (e.g. ne=8 nk=4)") %>
+
+header:
+<%= header %>
+
+script: |
+<%= script %>
+
+  # Load modules
+  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  spack load phase0@2023.01/#{version_2}
+
+  # Execute PHASE/0
+  cd #{working_dir}
+  mpiexec #{version_1} #{:options}
+
+check: |
+<%= check %>
+
+submit: |
+<%= submit %>
