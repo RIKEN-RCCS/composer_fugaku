@@ -185,10 +185,10 @@ def prepost_common()
     label: Partition
     required: true
     options:
-      - [ gpu1, gpu1, set-max-prepost_time_1: 3, set-label-prepost_time_1: Maximum hours (0 - 3), set-max-prepost_cores:  72, set-label-prepost_cores: Number of CPU cores (1 - 72),  set-max-prepost_memory:  181, set-label-prepost_memory: Memory (5 - 181GB)  ]
-      - [ gpu2, gpu2,                                                                             set-max-prepost_cores:  36, set-label-prepost_cores: Number of CPU cores (1 - 36),  set-max-prepost_memory:   90, set-label-prepost_memory: Memory (5 - 90GB)   ]
-      - [ mem1, mem1, set-max-prepost_time_1: 3, set-label-prepost_time_1: Maximum hours (0 - 3), set-max-prepost_cores: 224, set-label-prepost_cores: Number of CPU cores (1 - 224), set-max-prepost_memory: 5001, set-label-prepost_memory: Memory (5 - 5001GB) ]
-      - [ mem2, mem2,                                                                             set-max-prepost_cores:  56, set-label-prepost_cores: Number of CPU cores (1 - 56),  set-max-prepost_memory: 1500, set-label-prepost_memory: Memory (5 - 1500GB) ]
+      - [ gpu1, gpu1, set-max-prepost_time_1: 3, set-label-prepost_time_1: Maximum hours (0 - 3), set-max-prepost_cores:  72, set-label-prepost_cores: Number of CPU cores (1 - 72),  set-max-prepost_memory:  181, set-label-prepost_memory: Memory size (5 - 181GB)  ]
+      - [ gpu2, gpu2,                                                                             set-max-prepost_cores:  36, set-label-prepost_cores: Number of CPU cores (1 - 36),  set-max-prepost_memory:   90, set-label-prepost_memory: Memory size (5 - 90GB)   ]
+      - [ mem1, mem1, set-max-prepost_time_1: 3, set-label-prepost_time_1: Maximum hours (0 - 3), set-max-prepost_cores: 224, set-label-prepost_cores: Number of CPU cores (1 - 224), set-max-prepost_memory: 5001, set-label-prepost_memory: Memory size (5 - 5001GB) ]
+      - [ mem2, mem2,                                                                             set-max-prepost_cores:  56, set-label-prepost_cores: Number of CPU cores (1 - 56),  set-max-prepost_memory: 1500, set-label-prepost_memory: Memory size (5 - 1500GB) ]
 
   prepost_time:
     widget: number
