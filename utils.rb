@@ -510,7 +510,7 @@ def llio(target)
     widget: radio
     direction: horizontal
     value: "(None)"
-    help: To reduce IO load, the targets are transferred to the cache area. Enabling this feature is recommended when using more than 7,000 nodes or 28,000 processes <a href=\"https://www.fugaku.r-ccs.riken.jp/doc_root/en/user_guides/use_latest/LayeredStorageAndLLIO/index.html\">More info</a>.
+    help: To reduce I/O load, the targets are transferred to the cache area by LLIO. Enabling this feature is required when using more than 7,000 nodes or 28,000 processes (Refer to <a target="_blank" href="https://www.fugaku.r-ccs.riken.jp/doc_root/en/user_guides/use_latest/LayeredStorageAndLLIO/index.html">English</a> or <a target="_blank" href="https://www.fugaku.r-ccs.riken.jp/doc_root/ja/user_guides/use_latest/LayeredStorageAndLLIO/index.html">Japanese</a> for details).
     options:
       - ["(None)", "", disable-llio_comment, disable-llio_exec_file_transfer, disable-llio_file_transfer, disable-llio_dir_transfer ]
 YAML
