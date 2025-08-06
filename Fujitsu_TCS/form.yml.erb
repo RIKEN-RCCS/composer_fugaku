@@ -3,46 +3,97 @@
 %>
 ---
 form:
-  nodes:
+  rsc_grp:
+    widget: radio
+    label: Resource group
+    direction: horizontal
+    value: "small"
+    options:
+      - ["small", '#PJM -L "rscgrp=small"', disable-large_nodes, disable-large_one_dim_nodes, disable-large_two_dim_nodes, disable-large_three_dim_nodes]
+      - ["large", '#PJM -L "rscgrp=large"', disable-small_nodes, disable-small_one_dim_nodes, disable-small_two_dim_nodes, disable-small_three_dim_nodes]
+    
+  small_nodes:
     widget: radio
     label: Node dimension
     direction: horizontal
     value: "1 dimension"
     options:
-      - ["1 dimension", "", disable-two_dim_nodes, disable-three_dim_nodes, disable-node_strict ]
-      - ["2 dimension", "", disable-one_dim_nodes, disable-three_dim_nodes, disable-node_strict ]
-      - ["3 dimension", "", disable-two_dim_nodes, disable-one_dim_nodes ]
+      - ["1 dimension", "", disable-small_two_dim_nodes, disable-small_three_dim_nodes, disable-node_strict ]
+      - ["2 dimension", "", disable-small_one_dim_nodes, disable-small_three_dim_nodes, disable-node_strict ]
+      - ["3 dimension", "", disable-small_two_dim_nodes, disable-small_one_dim_nodes ]
 
-  one_dim_nodes:
+  small_one_dim_nodes:
     widget:  number
     required: true
-    label:   Number of nodes (1 - 48)
+    label:   Number of nodes (1 - 384)
     indent:  1
     value:   1
     min:     1
-    max:     48
-    step:    1
+    max:     384
   
-  two_dim_nodes:
+  small_two_dim_nodes:
     widget:  number
-    label:   [X nodes (1 - 48), Y nodes (1 - 69)]
+    label:   [X nodes (1 - 144), Y nodes (1 - 336)]
+    required: true
     indent:  1
     size:    2
     value:   [1, 1]
     min:     [1, 1]
-    max:     [48, 69]
-    step:    [1, 1]
+    max:     [144, 336]
+    help: The number of nodes must be 384 or less.
 
-  three_dim_nodes:
+  small_three_dim_nodes:
     widget:  number
-    label:   [X nodes (1 - 48), Y nodes (1 - 69), Z nodes (1 - 48)]
+    label:   [X nodes (1 - 48), Y nodes (1 - 21), Z nodes (1 - 48)]
+    required: true
     indent:  1
     size:    3
     value:   [1, 1, 1]
     min:     [1, 1, 1]
-    max:     [48, 69, 48]
-    step:    [1, 1, 1]
+    max:     [48, 21, 48]
+    help: The number of nodes must be 384 or less.
 
+  large_nodes:
+    widget: radio
+    label: Node dimension
+    direction: horizontal
+    value: "1 dimension"
+    options:
+      - ["1 dimension", "", disable-large_two_dim_nodes, disable-large_three_dim_nodes, disable-node_strict ]
+      - ["2 dimension", "", disable-large_one_dim_nodes, disable-large_three_dim_nodes, disable-node_strict ]
+      - ["3 dimension", "", disable-large_two_dim_nodes, disable-large_one_dim_nodes ]
+
+  large_one_dim_nodes:
+    widget:  number
+    required: true
+    label:   Number of nodes (385 - 12,288)
+    indent:  1
+    value:   385
+    min:     385
+    max:     12288
+
+  large_two_dim_nodes:
+    widget:  number
+    label:   [X nodes (1 - 144), Y nodes (1 - 576)]
+    required: true
+    indent:  1
+    size:    2
+    value:   [1, 1]
+    min:     [1, 1]
+    max:     [144, 576]
+    help: The number of nodes must be between 385 and 12,288.
+
+  large_three_dim_nodes:
+    widget:  number
+    label:   [X nodes (1 - 48), Y nodes (1 - 36), Z nodes (1 - 48)]
+    required: true
+    indent:  1
+    size:    3
+    value:   [1, 1, 1]
+    min:     [1, 1, 1]
+    max:     [48, 36, 48]
+    help: The number of nodes must be between 385 and 12,288.
+    
   node_shape:
     widget: radio
     label: Node shape
@@ -86,7 +137,7 @@ form:
   show_advanced_options:
     widget: checkbox
     options:
-      - [ 'Show advanced option', '', show-statistics, show-bulk, show-gfscache, show-use_spack ]
+      - [ 'Show advanced option', '', show-statistics, show-bulk, show-gfscache, show-llio, show-use_spack ]
 
   bulk:
     widget: number
@@ -125,6 +176,82 @@ form:
       - ["/vol0006", "/vol0006"]
     help: "If you use spack, you may need /vol0004."
 
+  llio:
+    widget: checkbox
+    indent: 1
+    options:
+      - [ "Use LLIO", '# LLIO transfer', enable-llio_target, enable-llio_file, enable-llio_dir, enable-llio_cn, enable-llio_tmp, enable-llio_async, enable-llio_libp ]
+    help: To reduce I/O load, the targets are transferred to the cache area by LLIO. Enabling this feature is required when using more than 7,000 nodes or 28,000 processes (Refer to <a target="_blank" href="https://www.fugaku.r-ccs.riken.jp/doc_root/en/user_guides/use_latest/LayeredStorageAndLLIO/index.html">English</a> or <a target="_blank" href="https://www.fugaku.r-ccs.riken.jp/doc_root/ja/user_guides/use_latest/LayeredStorageAndLLIO/index.html">Japanese</a> for details).
+
+  llio_target:
+    label: LLIO target
+    indent: 2
+    widget: radio
+    direction: horizontal
+    value: File
+    options:
+      - ["File", "/usr/bin/llio_transfer", enable-llio_file]
+      - ["Directory", "/home/system/tool/dir_transfer", enable-llio_dir]
+
+  llio_file:
+    widget: path
+    indent: 2
+    label: File transferred by LLIO
+    value: <%= default_dir() %>
+    show_files: true
+    <%= favorites() %>
+
+  llio_dir:
+    widget: path
+    indent: 2
+    label: Directory transferred by LLIO
+    value: <%= default_dir() %>
+    show_files: false
+    <%= favorites() %>
+    
+  llio_cn:
+    widget: select
+    indent: 2
+    label: LLIO Cache Size (Default is 128MiB)
+    value: 128Mi
+    options:
+      - [ "off" ]
+      - [ 128Mi ]
+<% (1..28).each do |i| %>
+      - [ <%= i %>Gi ]
+<% end %>
+    help: If your job has sufficient memory usage, you can improve I/O performance by increasing the cache size (Refer to <a target="_blank" href="https://fugaku.zendesk.com/hc/en-us/articles/13074859964815-Improving-File-I-O-Performance-with-LLIO">English</a> or <a target="_blank" href="https://fugaku.zendesk.com/hc/ja/articles/13074859964815-LLIO機能を用いてファイルI-O性能を改善する">Japanese</a> for details).
+
+  llio_tmp:
+    widget: checkbox
+    indent: 2
+    options:
+      - [ "Use node temporary area", "export TMPDIR=$PJM_LOCALTMP", enable-llio_tmp_size ]
+    help: I/O performance can be improved by using the node temporary area ($PJM_LOCALTMP), a temporary area of LLIO, as the output destination for temporary files.
+
+  llio_tmp_size:
+    widget: number
+    indent: 2
+    label: Node temporary area size for temporary files (1 - 80 GiB)
+    value: 1
+    min: 1
+    max: 80
+    step: 1
+
+  llio_async:
+    widget: checkbox
+    indent: 2
+    options:
+      - ["Use async option", "#PJM --llio async-close=on"]
+    help: When writing to a file, the close() function typically does not return until the data write is complete. However, by enabling the LLIO asynchronous close function (async-close=on), processing can proceed to the next step without waiting for the write to LLIO to complete.
+
+  llio_libp:
+    widget: checkbox
+    indent: 2
+    options:
+      - ["Trasnfer LD_LIBRARY_PATH", "/home/system/tool/sort_libp -s -a"]
+    help: Transfer all files under each directory specified in LD_LIBRARY_PATH to LLIO as common files (Refer to <a target="_blank" href="https://www.fugaku.r-ccs.riken.jp/doc_root/en/user_guides/use_latest/JobExecution/EnvironmentSettings.html#sort-libp">English</a> or <a target="_blank" href="https://www.fugaku.r-ccs.riken.jp/doc_root/ja/user_guides/use_latest/JobExecution/EnvironmentSettings.html#sort-libp">Japanese</a> for details).
+
   use_spack:
     widget: checkbox
     indent: 1
@@ -146,21 +273,33 @@ header:
 
 script: |
   #!/bin/bash
-  #PJM -L "node=#{one_dim_nodes}#{:node_shape}"
-  #PJM -L "node=#{two_dim_nodes_1}x#{two_dim_nodes_2}#{:node_shape}"
-  #PJM -L "node=#{three_dim_nodes_1}x#{three_dim_nodes_2}x#{three_dim_nodes_3}#{:node_shape}#{:node_strict}"
+  #{rsc_grp}
+  #PJM -L "node=#{small_one_dim_nodes}#{:node_shape}"
+  #PJM -L "node=#{small_two_dim_nodes_1}x#{small_two_dim_nodes_2}#{:node_shape}"
+  #PJM -L "node=#{small_three_dim_nodes_1}x#{small_three_dim_nodes_2}x#{small_three_dim_nodes_3}#{:node_shape}#{:node_strict}"
+  #PJM -L "node=#{large_one_dim_nodes}#{:node_shape}"
+  #PJM -L "node=#{large_two_dim_nodes_1}x#{large_two_dim_nodes_2}#{:node_shape}"
+  #PJM -L "node=#{large_three_dim_nodes_1}x#{large_three_dim_nodes_2}x#{large_three_dim_nodes_3}#{:node_shape}#{:node_strict}"
   #PJM -L "elapse=#{time_1}:#{time_2}:00"
   #PJM --mpi "proc=#{proc_thread_1}"
   #PJM --bulk --sparam #{bulk_1}-#{bulk_2}
   #PJM #{statistics}
   #PJM --pathname #{pathname}
   #PJM -x PJM_LLIO_GFSCACHE=#{gfscache}
+  #PJM --llio cn-cache-size=#{llio_cn}
+  #PJM --llio localtmp-size=#{llio_tmp_size}Gi
+  #{llio_async}
   set -e
   
   #{use_spack}
   spack load #{spack_modules}
   export OMP_NUM_THREADS=#{proc_thread_2}
+  #{llio_tmp}
+ 
+  #{llio}
+  #{llio_libp}
+  #{llio_target} #{llio_file}
+  #{llio_target} #{llio_dir}
 
 submit: |
   OC_SUBMIT_OPTIONS='--no-check-directory'
-  
