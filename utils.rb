@@ -333,7 +333,7 @@ YAML
   end
   
   script << <<-YAML
-  #PJM -L "elapse=\#{time_1}:\#{time_2}:00"
+  #PJM -L "elapse=\#{time_1}:\#{zeropadding(time_2, 2)}:00"
   #PJM -g \#{group}
   \#{mode}
   #PJM --mail-list \#{mail}

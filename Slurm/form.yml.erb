@@ -50,6 +50,10 @@ form:
       - ["1", "1"]
       - ["2", "2"]
 
+  path:
+    widget: path
+    label: File
+
   use_spack:
     widget: checkbox
     options:
@@ -77,7 +81,7 @@ check: |
 script: |
   #!/bin/bash
   #SBATCH -p #{partiton}
-  #SBATCH -t #{time_1}:#{time_2}:00
+  #SBATCH -t #{time_1}:#{zeropadding(time_2, 2)}:00
   #SBATCH -n #{cores}
   #SBATCH --mem #{memory}G
   #SBATCH --gpus-per-node=#{gpus}
@@ -85,3 +89,4 @@ script: |
   #{use_spack}
   spack load #{spack_modules}
   
+  #{path}

@@ -134,6 +134,10 @@ form:
     min: [1, 1]
     max: ["", 48]
 
+  path:
+    widget: path
+    label: File
+
   show_advanced_options:
     widget: checkbox
     options:
@@ -280,7 +284,7 @@ script: |
   #PJM -L "node=#{large_one_dim_nodes}#{:node_shape}"
   #PJM -L "node=#{large_two_dim_nodes_1}x#{large_two_dim_nodes_2}#{:node_shape}"
   #PJM -L "node=#{large_three_dim_nodes_1}x#{large_three_dim_nodes_2}x#{large_three_dim_nodes_3}#{:node_shape}#{:node_strict}"
-  #PJM -L "elapse=#{time_1}:#{time_2}:00"
+  #PJM -L "elapse=#{time_1}:#{zeropadding(time_2, 2)}:00"
   #PJM --mpi "proc=#{proc_thread_1}"
   #PJM --bulk --sparam #{bulk_1}-#{bulk_2}
   #PJM #{statistics}
@@ -300,6 +304,7 @@ script: |
   #{llio_libp}
   #{llio_target} #{llio_file}
   #{llio_target} #{llio_dir}
+  #{path}
 
 submit: |
   OC_SUBMIT_OPTIONS='--no-check-directory'
