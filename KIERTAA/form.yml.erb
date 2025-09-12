@@ -5,30 +5,39 @@
 
   samples = []
   groups.each do |g|
-    raw_dir = "/2ndfs/" + g + "/" + ENV['USER'] + "/raw/"
+    base_dir = "/2ndfs/#{g}/#{ENV['USER']}"
+    raw_dir = base_dir + "/raw"
     if Dir.exist?(raw_dir)
-      samples += Dir.entries(raw_dir).select { |entry|
+      Dir.entries(raw_dir).each do |entry|
         path = File.join(raw_dir, entry)
-        File.directory?(path) && !['.', '..'].include?(entry)
-        }.map { |entry|
-          File.join(raw_dir, entry)
+        next unless File.directory?(path) && !['.', '..'].include?(entry)
+
+        samples << {
+          full: path,
+          basename: entry,
+          group: g,
+	  base_dir: base_dir
         }
+      end
     end
   end
-
+  
   oc_assert(!samples.empty?, "No directory \"/2ndfs/${GROUP}/#{ENV['USER']}/raw/${SAMPLE}\".")
 %>
 ---
 header:
-  _script_location:
+  sample_location:
     widget: select
     label: Location of sample
     required: true
     options:
     <% samples.each do |sample| %>
-      - ["<%= sample %>", ["<%= File.basename(sample) %>", "<%= sample.split("/")[2] %>"], set-value-_script_2: "ood_kiertaa_<%= File.basename(sample) %>", hide-_script]
+      - ["<%= sample[:full] %>", ["<%= sample[:basename] %>", "<%= sample[:group] %>"], set-value-_script_2: "ood_kiertaa_<%= sample[:basename] %>", hide-_script, set-value-_script_location: "<%= sample[:base_dir] %>", hide-_script_location ]
     <% end %>
 
+  _script_location:
+    widget: text
+    
   _script:
     widget:   text
     size :    2
@@ -116,7 +125,7 @@ form:
     widget: checkbox
     direction: horizontal
     options:
-      - [ "Intermediate-Filter", "", show-rmr ]
+      - [ "Intermediate-Filter", "", enable-rmr ]
       
   rmr:
     widget: number
@@ -124,6 +133,7 @@ form:
     min: 3
     max: 99
     step: 2
+    value: 21
     indent: 1
     help: Input number must be odd.
     
@@ -136,7 +146,7 @@ form:
   binning:
     widget: number
     label: Voxel Binning Size (3 - 99)
-    min: 2
+    min: 3
     max: 99
     step: 2
     help: Input number must be odd.
@@ -144,7 +154,7 @@ form:
 
   rect:
     widget: number
-    label: ["Rect Filter (0 - 9,999)", [Origin-x, Origin-y, ROI-x, ROI-y]]
+    label: ["Rect Filter (0 - 9,999)", [Origin-x, Origin-y, ROI-w, ROI-h]]
     size: 4
     min: [0, 0, 0, 0]
     max: [9999, 9999, 9999, 9999]
@@ -154,7 +164,7 @@ form:
     widget: checkbox
     direction: horizontal
     options:
-      - [ "Job Control", "", show-ppn, show-debug_mode, show-job_type, show-output ]
+      - [ "Job Control", "", show-ppn, show-debug_mode, show-elapse, show-job_type, show-output ]
 
   ppn:
     widget: select
@@ -180,6 +190,14 @@ form:
       - [ "Yes", "yes" ]
     indent: 1
 
+  elapse:
+    widget: number
+    size: 2
+    label: [Maximum hours (0 - 72), Maximum minutes (0 - 59)]
+    max:  [72, 59]
+    min:  [0,   0]
+    indent: 1
+    
   job_type:
     widget: radio
     label: Job Type
@@ -187,7 +205,7 @@ form:
     value: Single
     options:
       - [Single, single]
-      - [Bulk,   bulk, disable-output]
+      - [Bulk,   bulk, disable-output, enable-bulk_number]
     indent: 1
 
   output:
@@ -195,12 +213,20 @@ form:
     label: Output
     indent: 1
 
+  bulk_number:
+    widget: number
+    size: 2
+    label: ["Start bulk number", "End bulk number"]
+    value: [0, 10]
+    min: [0, 0]
+    indent: 1
+
 script:
   label: ct.conf
   content: |
     user_id = "<%= ENV['USER'] %>"
-    group_id = "#{_script_location_2}"
-    sample = "#{_script_location_1}"
+    group_id = "#{sample_location_2}"
+    sample = "#{sample_location_1}"
     mode = "#{mode}"
     pix_size = #{pix_size}
     center = #{center}
@@ -213,8 +239,14 @@ script:
     rect = (#{rect_1}, #{rect_2}) (#{rect_3}, #{rect_4})
     ppn = #{ppn}
     debug_mode = #{debug_mode}
+    elapse = #{elapse_1}:#{zeropadding(elapse_2, 2)}:00
     job_type = #{job_type}
     output = "#{output}"
+
+check: |
+  if @job_type == "Bulk" && !@bulk_number_1.empty? && !@bulk_number_2.empty? then
+    oc_assert(@bulk_number_1.to_i < @bulk_number_2.to_i, "Start bulk number must be smaller than end bulk number")
+  end
 
 submit: |
   #!/usr/bin/env bash
@@ -223,3 +255,7 @@ submit: |
   mv #{OC_SCRIPT_NAME} ct.conf
   echo "" >> ct.conf
   PATH=/vol0004/apps/opt/KIERTAA/bin:$PATH genjs_ct ct.conf > #{OC_SCRIPT_NAME}
+  if [ "#{job_type}" = "bulk" ] && [ "#{bulk_number_1}" != "" ] && [ "#{bulk_number_2}" != "" ]; then
+    OC_SUBMIT_OPTIONS="--bulk --sparam #{bulk_number_1}-#{bulk_number_2}"
+  fi
+  
