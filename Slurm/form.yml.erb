@@ -70,13 +70,13 @@ form:
 <% end %>
 
 check: |
-  oc_assert(@time_1.to_i != 0 || @time_2.to_i != 0, "Time is too short.")
+  oc_assert(@time_1 != 0 || @time_2 != 0, "Time is too short.")
   message = "Exceeded Time (#{@time_1}:#{@time_2}:00)."
-  oc_assert((@partiton != "gpu1"              || @time_1.to_i !=   3) || @time_2.to_i <= 0, message)
-  oc_assert((@partiton != "gpu2"              || @time_1.to_i !=  24) || @time_2.to_i <= 0, message)
-  oc_assert((@partiton != "mem1"              || @time_1.to_i !=   3) || @time_2.to_i <= 0, message)
-  oc_assert((@partiton != "mem2"              || @time_1.to_i !=  24) || @time_2.to_i <= 0, message)
-  oc_assert((@partiton != "ondemand-reserved" || @time_1.to_i != 720) || @time_2.to_i <= 0, message)
+  oc_assert((@partiton != "gpu1"              || @time_1 !=   3) || @time_2 <= 0, message)
+  oc_assert((@partiton != "gpu2"              || @time_1 !=  24) || @time_2 <= 0, message)
+  oc_assert((@partiton != "mem1"              || @time_1 !=   3) || @time_2 <= 0, message)
+  oc_assert((@partiton != "mem2"              || @time_1 !=  24) || @time_2 <= 0, message)
+  oc_assert((@partiton != "ondemand-reserved" || @time_1 != 720) || @time_2 <= 0, message)
   
 script: |
   #!/bin/bash

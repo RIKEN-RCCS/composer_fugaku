@@ -53,12 +53,12 @@ check: |
   if @OC_CLUSTER_NAME == "Fugaku"
 <%= check %>
   else
-    oc_assert(@prepost_time_1.to_i != 0 || @prepost_time_2.to_i != 0, "Time is too short.")
+    oc_assert(@prepost_time_1 != 0 || @prepost_time_2 != 0, "Time is too short.")
     message = "Exceeded Time (\#{@prepost_time_1}:\#{@prepost_time_2}:00)."
-    oc_assert((@prepost_partiton != "gpu1" || @prepost_time_1.to_i !=  3) || @time_2.to_i <= 0, message)
-    oc_assert((@prepost_partiton != "gpu2" || @prepost_time_1.to_i != 24) || @time_2.to_i <= 0, message)
-    oc_assert((@prepost_partiton != "mem1" || @prepost_time_1.to_i !=  3) || @time_2.to_i <= 0, message)
-    oc_assert((@prepost_partiton != "mem2" || @prepost_time_1.to_i != 24) || @time_2.to_i <= 0, message)
+    oc_assert((@prepost_partiton != "gpu1" || @prepost_time_1 !=  3) || @time_2 <= 0, message)
+    oc_assert((@prepost_partiton != "gpu2" || @prepost_time_1 != 24) || @time_2 <= 0, message)
+    oc_assert((@prepost_partiton != "mem1" || @prepost_time_1 !=  3) || @time_2 <= 0, message)
+    oc_assert((@prepost_partiton != "mem2" || @prepost_time_1 != 24) || @time_2 <= 0, message)
   end
 
 submit: |

@@ -351,28 +351,28 @@ YAML
   end
 
   check = <<-YAML
-  oc_assert(@time_1.to_i != 0 || @time_2.to_i != 0, "Time is too short.")
+  oc_assert(@time_1 != 0 || @time_2 != 0, "Time is too short.")
   message = "Exceeded Time (\#{@time_1}:\#{@time_2}:00)."
-  oc_assert((@rsc_group != "small"      || @time_1.to_i != 72) || @time_2.to_i <= 0, message)
-  oc_assert((@rsc_group != "large"      || @time_1.to_i != 24) || @time_2.to_i <= 0, message)
-  oc_assert((@rsc_group != "f-pt"       || @time_1.to_i != 24) || @time_2.to_i <= 0, message)
-  oc_assert((@rsc_group != "spot-small" || @time_1.to_i !=  4) || @time_2.to_i <= 0, message)
-  oc_assert((@rsc_group != "spot-large" || @time_1.to_i !=  4) || @time_2.to_i <= 0, message)
+  oc_assert((@rsc_group != "small"      || @time_1 != 72) || @time_2 <= 0, message)
+  oc_assert((@rsc_group != "large"      || @time_1 != 24) || @time_2 <= 0, message)
+  oc_assert((@rsc_group != "f-pt"       || @time_1 != 24) || @time_2 <= 0, message)
+  oc_assert((@rsc_group != "spot-small" || @time_1 !=  4) || @time_2 <= 0, message)
+  oc_assert((@rsc_group != "spot-large" || @time_1 !=  4) || @time_2 <= 0, message)
 YAML
 
   if rsc_group == "single" && enable_threads
     # Not required
   elsif rsc_group != "single" && enable_threads
     check << <<-YAML
-  nodes   = @nodes_procs_threads_1.to_i
-  procs   = @nodes_procs_threads_2.to_i
-  threads = @nodes_procs_threads_3.to_i
+  nodes   = @nodes_procs_threads_1
+  procs   = @nodes_procs_threads_2
+  threads = @nodes_procs_threads_3
   oc_assert(nodes * 48 >= procs * threads, 'The condition "nodes * 48 >= procs * threads" is not met.')
 YAML
   elsif rsc_group != "single" && !enable_threads
     check << <<-YAML
-  nodes   = @nodes_procs_1.to_i
-  procs   = @nodes_procs_2.to_i
+  nodes   = @nodes_procs_1
+  procs   = @nodes_procs_2
   oc_assert(nodes * 48 >= procs, 'The condition "nodes * 48 >= procs" is not met.')
 YAML
   end

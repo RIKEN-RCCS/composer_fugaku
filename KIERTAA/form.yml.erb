@@ -245,7 +245,7 @@ script:
 
 check: |
   if @job_type == "Bulk" && !@bulk_number_1.empty? && !@bulk_number_2.empty? then
-    oc_assert(@bulk_number_1.to_i < @bulk_number_2.to_i, "Start bulk number must be smaller than end bulk number")
+    oc_assert(@bulk_number_1 < @bulk_number_2, "Start bulk number must be smaller than end bulk number")
   end
 
 submit: |
