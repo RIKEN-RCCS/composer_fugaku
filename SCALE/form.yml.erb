@@ -45,10 +45,10 @@ script: |
   . /vol0004/apps/oss/spack/share/spack/setup-env.sh
   spack load scale@5.5.2
   #{llio_comment}
-  #{llio_dir_transfer} #{_SCRIPT_LOCATION}
+  #{llio_dir_transfer} #{OC_SCRIPT_LOCATION}
 
   # Execute SCALE
-  cd #{_SCRIPT_LOCATION}
+  cd #{OC_SCRIPT_LOCATION}
   mpiexec scale-rm_pp #{rm_pp_file}
   mpiexec scale-rm_init #{rm_init_file}
   mpiexec scale-rm #{rm_file}

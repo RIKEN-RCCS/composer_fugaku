@@ -30,10 +30,10 @@ script: |
   spack load modylas-new@#{modylas}
   #{llio_comment}
   #{llio_exec_file_transfer} `which #{exec_file}`
-  #{llio_dir_transfer} #{_SCRIPT_LOCATION}
+  #{llio_dir_transfer} #{OC_SCRIPT_LOCATION}
 
   # Execute MODYLAS
-  cd #{_SCRIPT_LOCATION}
+  cd #{OC_SCRIPT_LOCATION}
   mpiexec #{exec_file} #{:session_name}
 
 check: |

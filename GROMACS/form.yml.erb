@@ -26,7 +26,7 @@ script: |
   spack load gromacs@2025.0
 
   # Execute GROMACS
-  cd #{_SCRIPT_LOCATION}
+  cd #{OC_SCRIPT_LOCATION}
   mpiexec gmx_mpi #{:options}
 
 check: |

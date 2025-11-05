@@ -28,7 +28,7 @@ script: |
   spack load pimd@#{pimd}
 
   # Execute PIMD
-  cd #{_SCRIPT_LOCATION}
+  cd #{OC_SCRIPT_LOCATION}
   mpiexec #{exec_file}
 
 check: |
