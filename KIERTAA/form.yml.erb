@@ -255,7 +255,7 @@ submit: |
   mv #{OC_SCRIPT_NAME} ct.conf
   echo "" >> ct.conf
   PATH=/vol0004/apps/opt/KIERTAA/bin:$PATH genjs_ct ct.conf > #{OC_SCRIPT_NAME}
-  if [ "#{job_type}" = "bulk" ] && [ "#{bulk_number_1}" != "" ] && [ "#{bulk_number_2}" != "" ]; then
-    OC_SUBMIT_OPTIONS="--bulk --sparam #{bulk_number_1}-#{bulk_number_2}"
+  if [ "#{:job_type}" = "bulk" ] && [ "#{:bulk_number_1}" != "" ] && [ "#{:bulk_number_2}" != "" ]; then
+    OC_SUBMIT_OPTIONS="--bulk --sparam #{:bulk_number_1}-#{:bulk_number_2}"
   fi
   
