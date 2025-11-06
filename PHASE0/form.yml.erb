@@ -18,9 +18,9 @@ form:
     required: true
     value: phase.3d
     options:
-      - [phase.3d, [phase.3d, lhct42t]]
-      - [phase,    [phase,    jnmmtmd]]
-      - [ekcal,    [ekcal,    jnmmtmd]]
+      - [phase.3d, [phase.3d, du3vmts]]
+      - [phase,    [phase,    wohllpm]]
+      - [ekcal,    [ekcal,    wohllpm]]
       
 <%= working_dir(true) %>
 <%= text("options", "Options (e.g. ne=8 nk=4)") %>
@@ -32,8 +32,8 @@ script: |
 <%= script %>
 
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
-  spack load phase0@2023.01/#{version_2}
+  . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+  spack load phase0@2024.01/#{version_2}
 
   # Execute PHASE/0
   cd #{working_dir}

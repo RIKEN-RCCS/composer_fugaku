@@ -41,7 +41,7 @@ script: |
   set -e
   
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  . /vol0004/apps/oss/spack-v0.21/share/spack/setup-env.sh
   spack load openfoam-org@#{foundation_version} arch=#{_cluster_name}
   spack load openfoam@#{opencfd_version} arch=#{_cluster_name}
 

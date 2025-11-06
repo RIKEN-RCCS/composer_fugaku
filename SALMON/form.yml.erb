@@ -22,8 +22,8 @@ script: |
 <%= script %>
 
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
-  spack load salmon-tddft@2.2.0
+  . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+  spack load salmon-tddft
   #{llio_comment}
   #{llio_exec_file_transfer} `which salmon`
   #{llio_file_transfer} #{input_file}

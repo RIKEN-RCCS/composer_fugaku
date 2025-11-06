@@ -35,7 +35,7 @@ script: |
 <%= script %>
 
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  . /vol0004/apps/oss/spack-v0.21/share/spack/setup-env.sh
   spack load genesis@#{genesis}
   #{llio_comment}
   #{llio_exec_file_transfer} `which #{exec_file}`

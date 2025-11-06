@@ -22,8 +22,8 @@ script: |
 <%= script %>
 
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
-  spack load gromacs@2025.0
+  . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+  spack load gromacs@2025.3
 
   # Execute GROMACS
   cd #{OC_SCRIPT_LOCATION}
