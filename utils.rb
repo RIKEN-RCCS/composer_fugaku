@@ -88,7 +88,7 @@ YAML
     widget: checkbox
     value: ["Hide script content"]
     options:
-      - ["Hide script content", "", hide-#{SCRIPT_CONTENT}]
+      - ["Hide script content", "", hide-#{OC_SCRIPT_CONTENT}]
     YAML
   end
 
