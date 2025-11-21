@@ -6,12 +6,12 @@
   form, header, script, check, submit = fugaku_common("single", enable_threads, check_script_content)
   
   # spack find akaikkr
-  versions = ["2021v002", "2021v001", "2002v010"]
+  #versions = ["2021v002", "2021v001", "2002v010"]
 %>
 ---
 form:
 <%= form %>
-<%= select("akaikkr", "AkaiKKR version", versions) %>
+<%# select("akaikkr", "AkaiKKR version", versions) %>
 <%= input_file(true) %>
 
 header:
@@ -21,8 +21,8 @@ script: |
 <%= script %>
   
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
-  spack load akaikkr@#{akaikkr}
+  . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+  spack load akaikkr
 
   # Execute AkaiKKR
   cd #{dirname(input_file)}

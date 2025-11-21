@@ -5,16 +5,13 @@
   check_script_content = true
   form, header, script, check, submit = fugaku_common("small_and_large", enable_threads, check_script_content)
   
-  # spack versions modylas-new -s
-  versions = [["1.1.0 (ff=charmm)", "1.1.0/qpbwc72"], ["1.1.0 (ff=gaff)", "1.1.0/inzalz2"], ["1.1.0 (ff=oplsaa)", "1.1.0/zhajus2"]]
-
   # spack find --paths modylas-new@1.1.0
   binaries = ["modylas", "modylas-mdtrj2xtc", "modylas-mdtrj2xyz", "modylas-mdxtc2ana", "modylas-text2bin"]
 %>
 ---
 form:
 <%= form %>
-<%= radio("modylas", "MODYLAS version", versions) %>
+<%= radio("ff", "Force Field", ["charmm", "gaff", "oplsaa"]) %>
 <%= exec_file(binaries) %>
 <%= text("session_name", "Session name", nil, nil, true) %>
 <%= llio("directory") %>
@@ -26,8 +23,8 @@ script: |
 <%= script %>
 
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
-  spack load modylas-new@#{modylas}
+  . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+  spack load modylas-new ff=#{ff}
   #{llio_comment}
   #{llio_exec_file_transfer} `which #{exec_file}`
   #{llio_dir_transfer} #{OC_SCRIPT_LOCATION}

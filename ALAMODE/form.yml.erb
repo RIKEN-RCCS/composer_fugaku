@@ -6,12 +6,12 @@
   form, header, script, check, submit = fugaku_common("small", enable_threads, check_script_content)
 
   # spack find alamode
-  versions = ["1.5.0", "1.4.2", "1.3.0"]
+  #versions = ["1.5.0", "1.4.2", "1.3.0"]
 %>
 ---
 form:
 <%= form %>
-<%= select("alamode", "ALAMODE version", versions) %>
+<%# select("alamode", "ALAMODE version", versions) %>
 <%= radio("alm", "Preprocessing", [["Perform", "alm"], ["Skip", "", "disable-alm_input_file", "disable-alm_output_file"]], "Perform", nil) %>
 <%= path("alm_input_file",  "Input file for preprocessing", nil, true, 1) %>
 <%= text("alm_output_file", "Output file for preprocessing", "si_alm.log", nil, true, 1) %>
@@ -24,8 +24,8 @@ script: |
 <%= script %>
 
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
-  spack load alamode@#{alamode}
+  . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+  spack load alamode
 
   # Execute ALAMODE
   cd #{dirname(input_file)}

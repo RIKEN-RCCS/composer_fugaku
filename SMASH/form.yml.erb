@@ -21,8 +21,8 @@ script: |
 <%= script %>
 
   # Load modules
-  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
-  spack load smash@3.0.2
+  . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+  spack load smash
 
   # Execute SMASH
   cd #{dirname(input_file)}
