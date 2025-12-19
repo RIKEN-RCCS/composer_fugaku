@@ -385,7 +385,15 @@ def output_options(options, value)
   if options[0].is_a?(Array)
     options.each do |v|
       form << "      - ["
-      form << v.each_with_index.map { |i, index| index >= 2 ? i : "\"#{i}\"" }.join(", ")
+      form << v.each_with_index.map { |i, index|
+        if index == 1 && i.is_a?(Array)
+          "[" + i.join(", ") + "]"
+        elsif index < 2
+          "\"#{i}\""
+        else
+          i
+        end
+      }.join(", ")
       form << "]\n"
     end
     form << (value == nil ? "    value: \"#{options[0][0]}\"" : "    value: \"#{value}\"")
