@@ -26,7 +26,7 @@ script: |
 
   # Execute FDS
   cd #{dirname(input_file)}
-  mpiexec fds_mpi_fugaku #{basename(input_file)}
+  mpiexec fds #{basename(input_file)}
 
 check: |
 <%= check %>
