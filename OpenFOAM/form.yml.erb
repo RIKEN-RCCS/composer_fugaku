@@ -5,12 +5,6 @@
   check_script_content = false
   form, header, script, check, submit = fugaku_common("small", enable_threads, check_script_content, "OpenFOAM")
   form_prepost = prepost_common()
-  
-  # spack versions openfoam-org -s
-  foundation_versions = ["11", "10"]
-
-  # spack versions openfoam -s
-  opencfd_versions = ["2312", "2306"]
 %>
 ---
 form:
@@ -23,12 +17,9 @@ form:
     value: Foundation
     required: true
     options:
-      - ["Foundation", "", enable-foundation_version ]
-      - ["OpenCFD",    "", enable-opencfd_version ]
+      - ["Foundation", [openfoam-org, 12], enable-foundation_version ]
+      - ["OpenCFD",    [openfoam, 2412],   enable-opencfd_version ]
       
-<%= radio("foundation_version", "Foundation version", foundation_versions) %>
-<%= radio("opencfd_version",    "OpenCFD version",    opencfd_versions) %>
-
 header:
 <%= header %>
 
@@ -41,9 +32,8 @@ script: |
   set -e
   
   # Load modules
-  . /vol0004/apps/oss/spack-v0.21/share/spack/setup-env.sh
-  spack load openfoam-org@#{foundation_version} arch=#{_cluster_name}
-  spack load openfoam@#{opencfd_version} arch=#{_cluster_name}
+  . /vol0004/apps/oss/spack/share/spack/setup-env.sh
+  spack load #{select_openfoam_1}@#{select_openfoam_2} arch=#{_cluster_name}
 
   # Execute OpenFOAM
   cd #{_script_location}
